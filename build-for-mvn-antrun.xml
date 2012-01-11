@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="project" default="clean_jsw" basedir=".">
+
+
+
+	<description> deploy to Java Service Wrapper </description>
+
+	<property name="project_resources" value="src/main/resources" />
+	<!-- Java Service Wrapper dir -->
+	<property name="jsw_base" value="./log_server/" />
+
+	<target name="compileAndPackege-windows">
+		<copy todir="${jsw_base}/lib">
+			<fileset dir="target">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+		<exec executable="cmd.exe">
+			<arg value="/c" />
+			<arg value="mvn dependency:copy-dependencies" />
+			<arg value="-DoutputDirectory=${jsw_base}/lib" />
+		</exec>
+	</target>
+
+	<target name="compileAndPackege_linux">
+		<copy todir="${jsw_base}/lib">
+			<fileset dir="target">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+		<exec executable="mvn">
+			<arg value="dependency:copy-dependencies" />
+			<arg value="-DoutputDirectory=${jsw_base}/lib" />
+		</exec>
+	</target>
+
+	<target name="copy-conf" depends="compileAndPackege_linux">
+		<copy todir="${jsw_base}/conf">
+			<fileset dir="${project_resources}">
+				<include name="*.*" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="copyTarget" depends="copy-conf">
+		<echo message=" ------------ copytarget ---------- " />
+		<copy todir="./target/log_server">
+			<fileset dir="./log_server" />
+		</copy>
+		<zip destfile="./target/log_server.zip" basedir="./target/log_server" />
+	</target>
+
+	<target name="clean_jsw" depends="copyTarget">
+		<echo message=" ------------ clean  java service wrapper ---------- " />
+		<echo message=" clean ${jsw_base} " />
+		<delete>
+			<fileset dir="${jsw_base}/lib">
+				<exclude name="libwrapper.so" />
+				<exclude name="wrapper.dll" />
+				<exclude name="wrapper.jar" />
+			</fileset>
+			<fileset dir="${jsw_base}/conf">
+				<exclude name="wrapper.conf" />
+			</fileset>
+			<fileset dir="${jsw_base}/logs">
+				<include name="*" />
+			</fileset>
+		</delete>
+	</target>
+
+
+</project>

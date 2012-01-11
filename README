@@ -1,0 +1,30 @@
+用java编写的udp日志采集服务器程序 
+
+打包
+      执行命令  [ mvn package ]  成功后即可在target 目录下发现 log_server 与 log_server.zip 文件 既为specl_log 的执行环境
+
+部署
+    在linux 下部署 需要将 log_server.zip copy 到安装目录  执行解压命令: [ unzip -d log_server log_server.zip ]
+     需要为 bin 目录下的执行命令赋权限 [ chmod 775 * ] 即可执行
+     
+启动
+  linux  [ logServer.sh  start ]  
+  windows [ logServer.bat ]
+  
+日志
+   所有执行日志 在 logs 文件下面wrapper.log 是 jsw 的日志可以观察启动及 运行情况.
+   
+配置
+  wrapper.conf 是主要的配置文件 详细内容可以参考 官网  http://wrapper.tanukisoftware.com/doc/english/properties.html   
+  
+  
+  
+客户端程序
+
+   执行命令  [ mvn package ]  成功后即可在 target 目录下发现 log-1.0.jar,加入类路径即可.
+
+配置文件
+  在执行客户端程序时需要定义连接参数 ,通过名为   [ logserver-client.properties ]
+ adlog.logger=adlog,10.0.10.24,55001,55004 
+  ||
+ [客户端日志名称].logger=[服务器端的日志名称],[服务器所在IP],[服务器监听端口],[本地发送数据接口] 
